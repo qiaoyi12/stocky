@@ -18,6 +18,10 @@ The write section is grouped under an explicit banner and every write function
 name carries an unambiguous verb (``upsert_``/``insert_``/``apply_``/``set_``)
 so the import-graph check and human reviewers can identify the mutating surface
 at a glance.
+
+Uploading a new CSV replaces the current inventory outright — there is no
+dataset scoping. Every function operates on the single, current set of
+``skus`` / ``sales_history`` rows.
 """
 
 from __future__ import annotations
@@ -64,9 +68,7 @@ def get_sales_history(session: Session, sku: str) -> List[SalesHistory]:
     """Return the sales-history rows for ``sku`` ordered by day (oldest first)."""
     return list(
         session.scalars(
-            select(SalesHistory)
-            .where(SalesHistory.sku == sku)
-            .order_by(SalesHistory.day)
+            select(SalesHistory).where(SalesHistory.sku == sku).order_by(SalesHistory.day)
         )
     )
 
@@ -136,7 +138,11 @@ def upsert_sku(
 
 
 def replace_sales_history(
-    session: Session, *, sku: str, units: Sequence[int], base_date: Optional[date] = None
+    session: Session,
+    *,
+    sku: str,
+    units: Sequence[int],
+    base_date: Optional[date] = None,
 ) -> List[SalesHistory]:
     """Replace all sales-history rows for ``sku`` with ``units`` (deterministic ingest).
 

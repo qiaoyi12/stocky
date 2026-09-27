@@ -27,6 +27,7 @@ from sqlalchemy.orm import Session
 from app.db import get_session
 from app.ingest.csv_parser import parse_csv
 from app.ingest.loader import load_rows
+from app.repositories import upload_repo
 from app.schemas import UploadResult
 
 router = APIRouter(prefix="/api/inventory", tags=["inventory"])
@@ -42,7 +43,10 @@ async def upload_inventory_csv(
     Reads the uploaded file's bytes, validates and parses them with
     :func:`~app.ingest.csv_parser.parse_csv`, and — when at least one row was
     accepted — persists those rows deterministically via
-    :func:`~app.ingest.loader.load_rows`, committing once on success.
+    :func:`~app.ingest.loader.load_rows`, committing once on success. Also
+    logs the upload (filename + accepted sku count) via
+    :func:`~app.repositories.upload_repo.create` so it shows up in the upload
+    history.
 
     Args:
         file: The multipart-uploaded CSV file. Its raw bytes are passed straight
@@ -61,6 +65,7 @@ async def upload_inventory_csv(
     if rows:
         try:
             load_rows(session, rows)
+            upload_repo.create(session, filename=file.filename, sku_count=result.accepted)
             session.commit()
         except Exception:
             session.rollback()

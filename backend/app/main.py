@@ -50,6 +50,7 @@ _ROUTER_MODULES = (
     "app.routers.simulation_router",
     "app.routers.chaos_router",
     "app.routers.impact_router",
+    "app.routers.uploads_router",
 )
 
 

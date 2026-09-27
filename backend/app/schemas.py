@@ -312,25 +312,17 @@ class SimulationResponse(BaseModel):
     projected: MetricsView
 
 
-# --- Datasets ----------------------------------------------------------------
+# --- Uploads -----------------------------------------------------------------
 
 
-class DatasetSummary(BaseModel):
-    """A dataset's metadata for ``GET /api/datasets`` (Req 5.1, 5.2).
+class UploadSummary(BaseModel):
+    """One logged CSV upload for ``GET /api/uploads``.
 
-    ``sku_count`` is computed from the count of ``skus`` rows carrying this
-    dataset's id; ``is_active`` reflects whether this is the current Active_Dataset.
+    Purely a history entry — uploading a new CSV replaces the current
+    inventory outright, so there is nothing here to activate or rename.
     """
 
     id: int
     filename: str
-    display_name: str
     uploaded_at: str
     sku_count: int
-    is_active: bool
-
-
-class DatasetRenameRequest(BaseModel):
-    """Request body for ``PATCH /api/datasets/{id}`` (Req 7.1)."""
-
-    display_name: str

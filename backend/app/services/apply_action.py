@@ -33,6 +33,7 @@ from __future__ import annotations
 
 from sqlalchemy.orm import Session
 
+from app.ingest import loader
 from app.repositories import recommendation_repo
 
 # The ONLY import of inventory-write functions outside the ingest loader. This is
@@ -89,6 +90,19 @@ def apply(session: Session, recommendation_id: int) -> ReviewResult:
     # branch affects ONLY the target SKU (rec.sku).
     try:
         _dispatch(session, rec)
+        # After a successful inventory mutation, refresh the SKU's cached
+        # detection metrics + classifications so the dashboard's stockout-risk
+        # group and Status badges reflect the new stock/reorder-point. Only the
+        # inventory-changing kinds need this; markdown/no_action leave stock
+        # untouched, so their cached classifications are still accurate. Kept
+        # inside this try so a recompute failure is handled exactly like a
+        # dispatch failure (status left at approved, error returned, caller
+        # rolls back) — keeping the transaction consistent.
+        if rec.action_kind in (
+            ActionKind.REORDER.value,
+            ActionKind.ADJUST_REORDER.value,
+        ):
+            loader.recompute_metrics_for(session, rec.sku)
     except Exception as exc:  # unknown SKU (KeyError), DB error, etc.
         # Failure (Req 11.3): leave status at approved, return the error. No
         # partial state is committed by this service (the caller owns the
