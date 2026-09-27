@@ -1,0 +1,266 @@
+﻿...........................F.........F..............F.........F.F...     [100%]
+================================== FAILURES ===================================
+___________________ test_property_round_trip_through_store ____________________
+  + Exception Group Traceback (most recent call last):
+  |   File "C:\stocky\backend\tests\test_csv_ingest.py", line 337, in test_property_round_trip_through_store
+  |     @given(rows=st.lists(valid_rows(), min_size=1, max_size=6, unique_by=lambda r: r.sku))
+  |                    ^^^
+  |   File "c:\stocky\backend\.venv\Lib\site-packages\hypothesis\core.py", line 2295, in wrapped_test
+  |     raise the_error_hypothesis_found
+  | ExceptionGroup: Hypothesis found 2 distinct failures. (2 sub-exceptions)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "C:\stocky\backend\tests\test_csv_ingest.py", line 355, in test_property_round_trip_through_store
+    |     loaded = load_rows(sess, accepted)
+    |   File "C:\stocky\backend\app\ingest\loader.py", line 137, in load_rows
+    |     recompute_metrics_for(session, row.sku, today=base_date)
+    |     ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\stocky\backend\app\ingest\loader.py", line 181, in recompute_metrics_for
+    |     metrics = compute_metrics(row.current_stock, row.avg_daily_sales, today=today)
+    |   File "C:\stocky\backend\app\detection\metrics.py", line 76, in compute_metrics
+    |     stockout_eta = _add_days_iso(base, round(days_of_cover))  # Req 2.3
+    |                                        ~~~~~^^^^^^^^^^^^^^^
+    | OverflowError: cannot convert float infinity to integer
+    | Failing test case: test_property_round_trip_through_store(
+    |     rows=[SkuRow(sku='0', name='0', category='0', current_stock=2, reorder_point=0, lead_time_days=0, unit_cost=0.0, selling_price=0.0, supplier_name='0', avg_daily_sales=1.1125369292536007e-308, sales_history=[], last_sold_date='2000-01-01')],
+    | )
+    +---------------- 2 ----------------
+    | Traceback (most recent call last):
+    |   File "C:\stocky\backend\tests\test_csv_ingest.py", line 355, in test_property_round_trip_through_store
+    |     loaded = load_rows(sess, accepted)
+    |   File "C:\stocky\backend\app\ingest\loader.py", line 137, in load_rows
+    |     recompute_metrics_for(session, row.sku, today=base_date)
+    |     ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "C:\stocky\backend\app\ingest\loader.py", line 181, in recompute_metrics_for
+    |     metrics = compute_metrics(row.current_stock, row.avg_daily_sales, today=today)
+    |   File "C:\stocky\backend\app\detection\metrics.py", line 76, in compute_metrics
+    |     stockout_eta = _add_days_iso(base, round(days_of_cover))  # Req 2.3
+    |   File "C:\stocky\backend\app\detection\metrics.py", line 100, in _add_days_iso
+    |     return date.fromordinal(base.toordinal() + days).isoformat()
+    |            ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+    | OverflowError: Python int too large to convert to C long
+    | Failing test case: test_property_round_trip_through_store(
+    |     rows=[SkuRow(sku='0', name='0', category='0', current_stock=1, reorder_point=0, lead_time_days=0, unit_cost=0.0, selling_price=0.0, supplier_name='0', avg_daily_sales=1.1125369292536007e-308, sales_history=[], last_sold_date='2000-01-01')],
+    | )
+    +------------------------------------
+___________________ test_mutation_encoding_output_is_inert ____________________
+
+    @settings(
+>       max_examples=150,
+                   ^^^
+        deadline=None,
+        suppress_health_check=[HealthCheck.too_slow],
+    )
+
+tests\test_inert_output.py:232: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_inert_output.py:251: in test_mutation_encoding_output_is_inert
+    load_rows(session, [row], base_date=date(2024, 1, 1))
+app\ingest\loader.py:137: in load_rows
+    recompute_metrics_for(session, row.sku, today=base_date)
+app\ingest\loader.py:181: in recompute_metrics_for
+    metrics = compute_metrics(row.current_stock, row.avg_daily_sales, today=today)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+current_stock = 1, avg_daily_sales = 5e-324, today = datetime.date(2024, 1, 1)
+
+    def compute_metrics(
+        current_stock: int,
+        avg_daily_sales: float,
+        today: Optional[date] = None,
+    ) -> Metrics:
+        """Compute deterministic inventory metrics for a SKU.
+    
+        Args:
+            current_stock: Units currently on hand.
+            avg_daily_sales: The CSV-provided, authoritative Sales_Velocity
+                (units/day). Any value <= 0 is treated as the zero-velocity edge.
+            today: Base date for the Stockout_ETA projection. Defaults to
+                ``date.today()`` when not supplied. Injectable to keep the
+                computation deterministic and testable.
+    
+        Returns:
+            A :class:`Metrics` value with ``sales_velocity`` always set. When
+            velocity is greater than zero, ``days_of_cover`` and ``stockout_eta``
+            are computed (Req 2.2, 2.3); when velocity is zero (or negative), both
+            are ``None`` and ``no_recent_sales`` is ``True`` (Req 2.5).
+        """
+        # Sales_Velocity is read directly from avg_daily_sales (Req 2.1).
+        sales_velocity = float(avg_daily_sales)
+    
+        if sales_velocity > 0:
+            days_of_cover = current_stock / sales_velocity  # Req 2.2
+            base = today if today is not None else date.today()
+>           stockout_eta = _add_days_iso(base, round(days_of_cover))  # Req 2.3
+                                               ^^^^^^^^^^^^^^^^^^^^
+E           OverflowError: cannot convert float infinity to integer
+E           Failing test case: test_mutation_encoding_output_is_inert(
+E               # The test always failed when commented parts were varied together.
+E               row=SkuRow(
+E                   sku='SKU-1',
+E                   name='0',  # or any other generated value
+E                   category='A',  # or any other generated value
+E                   current_stock=1,
+E                   reorder_point=0,  # or any other generated value
+E                   lead_time_days=1,  # or any other generated value
+E                   unit_cost=1.0,  # or any other generated value
+E                   selling_price=1.0,  # or any other generated value
+E                   supplier_name='Supplier A',
+E                   avg_daily_sales=5e-324,
+E                   sales_history=[],  # or any other generated value
+E                   last_sold_date='2024-01-01',
+E               ),
+E               manager_output='DROP TABLE skus;',  # or any other generated value
+E           )
+
+app\detection\metrics.py:76: OverflowError
+______________________ test_metric_correctness_property _______________________
+  + Exception Group Traceback (most recent call last):
+  |   File "C:\stocky\backend\tests\test_metrics.py", line 50, in test_metric_correctness_property
+  |     def test_metric_correctness_property(current_stock: int, avg_daily_sales: float) -> None:
+  |                    ^^^
+  |   File "c:\stocky\backend\.venv\Lib\site-packages\hypothesis\core.py", line 2295, in wrapped_test
+  |     raise the_error_hypothesis_found
+  | ExceptionGroup: Hypothesis found 2 distinct failures. (2 sub-exceptions)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "C:\stocky\backend\tests\test_metrics.py", line 55, in test_metric_correctness_property
+    |     result = compute_metrics(current_stock, avg_daily_sales, today=BASE_DATE)
+    |   File "C:\stocky\backend\app\detection\metrics.py", line 76, in compute_metrics
+    |     stockout_eta = _add_days_iso(base, round(days_of_cover))  # Req 2.3
+    |                                        ~~~~~^^^^^^^^^^^^^^^
+    | OverflowError: cannot convert float infinity to integer
+    | Failing test case: test_metric_correctness_property(
+    |     current_stock=1,
+    |     avg_daily_sales=5e-324,
+    | )
+    +---------------- 2 ----------------
+    | Traceback (most recent call last):
+    |   File "C:\stocky\backend\tests\test_metrics.py", line 55, in test_metric_correctness_property
+    |     result = compute_metrics(current_stock, avg_daily_sales, today=BASE_DATE)
+    |   File "C:\stocky\backend\app\detection\metrics.py", line 76, in compute_metrics
+    |     stockout_eta = _add_days_iso(base, round(days_of_cover))  # Req 2.3
+    |   File "C:\stocky\backend\app\detection\metrics.py", line 100, in _add_days_iso
+    |     return date.fromordinal(base.toordinal() + days).isoformat()
+    |            ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+    | OverflowError: Python int too large to convert to C long
+    | Failing test case: test_metric_correctness_property(
+    |     current_stock=1,
+    |     avg_daily_sales=9.601729532858718e-287,
+    | )
+    +------------------------------------
+_____________________ test_agents_never_mutate_inventory ______________________
+
+    @settings(max_examples=100, deadline=None, suppress_health_check=[HealthCheck.too_slow])
+>   @given(row=_sku_row_strategy, manager_kind=st.sampled_from(["reorder", "adjust_reorder", "markdown", "no_action", "bogus"]))
+                   ^^^
+
+tests\test_safety_boundary.py:310: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_safety_boundary.py:327: in test_agents_never_mutate_inventory
+    load_rows(session, [row], base_date=date(2024, 1, 1))
+app\ingest\loader.py:137: in load_rows
+    recompute_metrics_for(session, row.sku, today=base_date)
+app\ingest\loader.py:181: in recompute_metrics_for
+    metrics = compute_metrics(row.current_stock, row.avg_daily_sales, today=today)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\detection\metrics.py:76: in compute_metrics
+    stockout_eta = _add_days_iso(base, round(days_of_cover))  # Req 2.3
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+base = datetime.date(2024, 1, 1)
+days = 139753452578829824...9437285658093682688
+
+    def _add_days_iso(base: date, days: int) -> str:
+        """Return ``base + days`` as an ISO date string (``YYYY-MM-DD``).
+    
+        Uses ``date.toordinal``/``fromordinal`` so the offset works for any
+        non-negative day count without relying on ``timedelta`` overflow behaviour;
+        ``days`` is a rounded, non-negative day count from the caller.
+        """
+>       return date.fromordinal(base.toordinal() + days).isoformat()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       OverflowError: Python int too large to convert to C long
+E       Failing test case: test_agents_never_mutate_inventory(
+E           # The test always failed when commented parts were varied together.
+E           row=SkuRow(
+E               sku='SKU-1',
+E               name='0',  # or any other generated value
+E               category='A',  # or any other generated value
+E               current_stock=1,
+E               reorder_point=0,  # or any other generated value
+E               lead_time_days=1,  # or any other generated value
+E               unit_cost=1.0,  # or any other generated value
+E               selling_price=1.0,  # or any other generated value
+E               supplier_name='Supplier A',
+E               avg_daily_sales=7.155458284194707e-174,
+E               sales_history=[],  # or any other generated value
+E               last_sold_date='2024-01-01',
+E           ),
+E           manager_kind='reorder',  # or any other generated value
+E       )
+
+app\detection\metrics.py:100: OverflowError
+_______________ test_simulation_is_deterministic_and_read_only ________________
+
+    @settings(deadline=None, max_examples=200)
+>   @given(case=_sim_case())
+                   ^^^
+
+tests\test_simulation.py:320: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_simulation.py:339: in test_simulation_is_deterministic_and_read_only
+    _seed(
+tests\test_simulation.py:156: in _seed
+    load_rows(session, rows, base_date=BASE_DATE)
+app\ingest\loader.py:137: in load_rows
+    recompute_metrics_for(session, row.sku, today=base_date)
+app\ingest\loader.py:181: in recompute_metrics_for
+    metrics = compute_metrics(row.current_stock, row.avg_daily_sales, today=today)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\detection\metrics.py:76: in compute_metrics
+    stockout_eta = _add_days_iso(base, round(days_of_cover))  # Req 2.3
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+base = datetime.date(2024, 1, 15)
+days = 178942649218637150...9823635202976514048
+
+    def _add_days_iso(base: date, days: int) -> str:
+        """Return ``base + days`` as an ISO date string (``YYYY-MM-DD``).
+    
+        Uses ``date.toordinal``/``fromordinal`` so the offset works for any
+        non-negative day count without relying on ``timedelta`` overflow behaviour;
+        ``days`` is a rounded, non-negative day count from the caller.
+        """
+>       return date.fromordinal(base.toordinal() + days).isoformat()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       OverflowError: Python int too large to convert to C long
+E       Failing test case: test_simulation_is_deterministic_and_read_only(
+E           # The test always failed when commented parts were varied together.
+E           case=build(
+E               stored_stock=1,
+E               stored_reorder=0,  # or any other generated value
+E               stored_lead=1,  # or any other generated value
+E               stored_cost=0.0,  # or any other generated value
+E               stored_avg_daily_sales=5.588382671020881e-232,
+E               stored_history=[],  # or any other generated value
+E               o_stock=None,  # or any other generated value
+E               o_reorder=None,  # or any other generated value
+E               o_lead=None,  # or any other generated value
+E               o_cost=None,  # or any other generated value
+E               o_avg_daily_sales=None,  # or any other generated value
+E               o_history=None,  # or any other generated value
+E           ),
+E       )
+
+app\detection\metrics.py:100: OverflowError
+=========================== short test summary info ===========================
+FAILED tests/test_csv_ingest.py::test_property_round_trip_through_store - Exc...
+FAILED tests/test_inert_output.py::test_mutation_encoding_output_is_inert - O...
+FAILED tests/test_metrics.py::test_metric_correctness_property - ExceptionGro...
+FAILED tests/test_safety_boundary.py::test_agents_never_mutate_inventory - Ov...
+FAILED tests/test_simulation.py::test_simulation_is_deterministic_and_read_only
+5 failed, 63 passed in 815.95s (0:13:35)

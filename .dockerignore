@@ -1,0 +1,23 @@
+﻿# Python
+backend/.venv/
+backend/__pycache__/
+backend/.pytest_cache/
+backend/.hypothesis/
+backend/stocky.db
+backend/pytest_status.txt
+**/__pycache__/
+*.pyc
+
+# Node
+frontend/node_modules/
+frontend/dist/
+
+# Secrets
+backend/.env
+*.env
+!.env.example
+
+# Misc
+.git/
+.kiro/
+*.md

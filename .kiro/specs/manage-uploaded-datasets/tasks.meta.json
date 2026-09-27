@@ -1,0 +1,202 @@
+{
+  "pbtResults": {},
+  "executionHistory": {
+    "1. Add `Dataset` model and dataset-scope every existing table in `app/models.py`": [
+      {
+        "executionId": "f52f1f1c-7103-40e4-a64e-0ee061fa7ad3",
+        "chatSessionId": "sess_63370579-4462-4070-beb2-7d01b97c12e8",
+        "timestamp": 1790518080237
+      },
+      {
+        "executionId": "f52f1f1c-7103-40e4-a64e-0ee061fa7ad3",
+        "chatSessionId": "sess_63370579-4462-4070-beb2-7d01b97c12e8",
+        "timestamp": 1790518095265
+      },
+      {
+        "executionId": "f52f1f1c-7103-40e4-a64e-0ee061fa7ad3",
+        "chatSessionId": "sess_63370579-4462-4070-beb2-7d01b97c12e8",
+        "timestamp": 1790518176583
+      }
+    ],
+    "2. Add `DatasetSummary` and `DatasetRenameRequest` schemas in `app/schemas.py`": [
+      {
+        "executionId": "f52f1f1c-7103-40e4-a64e-0ee061fa7ad3",
+        "chatSessionId": "sess_63370579-4462-4070-beb2-7d01b97c12e8",
+        "timestamp": 1790518082112
+      },
+      {
+        "executionId": "f52f1f1c-7103-40e4-a64e-0ee061fa7ad3",
+        "chatSessionId": "sess_63370579-4462-4070-beb2-7d01b97c12e8",
+        "timestamp": 1790518095773
+      },
+      {
+        "executionId": "f52f1f1c-7103-40e4-a64e-0ee061fa7ad3",
+        "chatSessionId": "sess_63370579-4462-4070-beb2-7d01b97c12e8",
+        "timestamp": 1790518177433
+      }
+    ],
+    "5. Checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "f52f1f1c-7103-40e4-a64e-0ee061fa7ad3",
+        "chatSessionId": "sess_63370579-4462-4070-beb2-7d01b97c12e8",
+        "timestamp": 1790518082863
+      },
+      {
+        "executionId": "f52f1f1c-7103-40e4-a64e-0ee061fa7ad3",
+        "chatSessionId": "sess_63370579-4462-4070-beb2-7d01b97c12e8",
+        "timestamp": 1790518591562
+      },
+      {
+        "executionId": "7d0adaf5-9ed0-4c6a-8b92-a5dc9daf191b",
+        "chatSessionId": "sess_63370579-4462-4070-beb2-7d01b97c12e8",
+        "timestamp": 1790520040448
+      }
+    ],
+    "7. Thread `dataset_id` through `app/ingest/loader.py`": [
+      {
+        "executionId": "f52f1f1c-7103-40e4-a64e-0ee061fa7ad3",
+        "chatSessionId": "sess_63370579-4462-4070-beb2-7d01b97c12e8",
+        "timestamp": 1790518082983
+      }
+    ],
+    "9. Checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "f52f1f1c-7103-40e4-a64e-0ee061fa7ad3",
+        "chatSessionId": "sess_63370579-4462-4070-beb2-7d01b97c12e8",
+        "timestamp": 1790518083068
+      }
+    ],
+    "11. Scope `app/routers/inventory_router.py` to the active dataset": [
+      {
+        "executionId": "f52f1f1c-7103-40e4-a64e-0ee061fa7ad3",
+        "chatSessionId": "sess_63370579-4462-4070-beb2-7d01b97c12e8",
+        "timestamp": 1790518083141
+      }
+    ],
+    "12. Scope `app/services/dashboard.py` and its routers to the active dataset": [
+      {
+        "executionId": "f52f1f1c-7103-40e4-a64e-0ee061fa7ad3",
+        "chatSessionId": "sess_63370579-4462-4070-beb2-7d01b97c12e8",
+        "timestamp": 1790518083217
+      }
+    ],
+    "13. Add `dataset_id` to `app/repositories/case_repo.py` and `app/repositories/recommendation_repo.py`": [
+      {
+        "executionId": "f52f1f1c-7103-40e4-a64e-0ee061fa7ad3",
+        "chatSessionId": "sess_63370579-4462-4070-beb2-7d01b97c12e8",
+        "timestamp": 1790518083303
+      }
+    ],
+    "14. Add `dataset_id` to `SkuSnapshot` and thread it through `app/agents/context.py` and `app/agents/orchestrator.py`": [
+      {
+        "executionId": "f52f1f1c-7103-40e4-a64e-0ee061fa7ad3",
+        "chatSessionId": "sess_63370579-4462-4070-beb2-7d01b97c12e8",
+        "timestamp": 1790518083411
+      }
+    ],
+    "15. Scope `app/routers/investigation_router.py` to the active dataset": [
+      {
+        "executionId": "f52f1f1c-7103-40e4-a64e-0ee061fa7ad3",
+        "chatSessionId": "sess_63370579-4462-4070-beb2-7d01b97c12e8",
+        "timestamp": 1790518083497
+      }
+    ],
+    "16. Checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "f52f1f1c-7103-40e4-a64e-0ee061fa7ad3",
+        "chatSessionId": "sess_63370579-4462-4070-beb2-7d01b97c12e8",
+        "timestamp": 1790518083577
+      }
+    ],
+    "17. Scope `app/routers/chaos_router.py` / `app/services/chaos.py` to the active dataset": [
+      {
+        "executionId": "f52f1f1c-7103-40e4-a64e-0ee061fa7ad3",
+        "chatSessionId": "sess_63370579-4462-4070-beb2-7d01b97c12e8",
+        "timestamp": 1790518083658
+      }
+    ],
+    "19. Checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "f52f1f1c-7103-40e4-a64e-0ee061fa7ad3",
+        "chatSessionId": "sess_63370579-4462-4070-beb2-7d01b97c12e8",
+        "timestamp": 1790518083742
+      }
+    ],
+    "20. Add dataset API types and functions to `frontend/src/api/client.ts`": [
+      {
+        "executionId": "f52f1f1c-7103-40e4-a64e-0ee061fa7ad3",
+        "chatSessionId": "sess_63370579-4462-4070-beb2-7d01b97c12e8",
+        "timestamp": 1790518083805
+      }
+    ],
+    "22. Wire the Datasets nav item and route": [
+      {
+        "executionId": "f52f1f1c-7103-40e4-a64e-0ee061fa7ad3",
+        "chatSessionId": "sess_63370579-4462-4070-beb2-7d01b97c12e8",
+        "timestamp": 1790518083868
+      }
+    ],
+    "23. Extend the safety-boundary test in `backend/tests/test_safety_boundary.py`": [
+      {
+        "executionId": "f52f1f1c-7103-40e4-a64e-0ee061fa7ad3",
+        "chatSessionId": "sess_63370579-4462-4070-beb2-7d01b97c12e8",
+        "timestamp": 1790518083950
+      }
+    ],
+    "24. Checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "f52f1f1c-7103-40e4-a64e-0ee061fa7ad3",
+        "chatSessionId": "sess_63370579-4462-4070-beb2-7d01b97c12e8",
+        "timestamp": 1790518084023
+      }
+    ],
+    "25. Recreate `stocky.db` against the new dataset-scoped schema and smoke-check the upload flow": [
+      {
+        "executionId": "f52f1f1c-7103-40e4-a64e-0ee061fa7ad3",
+        "chatSessionId": "sess_63370579-4462-4070-beb2-7d01b97c12e8",
+        "timestamp": 1790518084121
+      }
+    ],
+    "3. Create `app/repositories/dataset_repo.py` with read functions": [
+      {
+        "executionId": "f52f1f1c-7103-40e4-a64e-0ee061fa7ad3",
+        "chatSessionId": "sess_63370579-4462-4070-beb2-7d01b97c12e8",
+        "timestamp": 1790518200027
+      },
+      {
+        "executionId": "f52f1f1c-7103-40e4-a64e-0ee061fa7ad3",
+        "chatSessionId": "sess_63370579-4462-4070-beb2-7d01b97c12e8",
+        "timestamp": 1790518228767
+      },
+      {
+        "executionId": "f52f1f1c-7103-40e4-a64e-0ee061fa7ad3",
+        "chatSessionId": "sess_63370579-4462-4070-beb2-7d01b97c12e8",
+        "timestamp": 1790518339835
+      }
+    ],
+    "4. Add write functions and exceptions to `app/repositories/dataset_repo.py`": [
+      {
+        "executionId": "f52f1f1c-7103-40e4-a64e-0ee061fa7ad3",
+        "chatSessionId": "sess_63370579-4462-4070-beb2-7d01b97c12e8",
+        "timestamp": 1790518352567
+      },
+      {
+        "executionId": "f52f1f1c-7103-40e4-a64e-0ee061fa7ad3",
+        "chatSessionId": "sess_63370579-4462-4070-beb2-7d01b97c12e8",
+        "timestamp": 1790518361223
+      },
+      {
+        "executionId": "f52f1f1c-7103-40e4-a64e-0ee061fa7ad3",
+        "chatSessionId": "sess_63370579-4462-4070-beb2-7d01b97c12e8",
+        "timestamp": 1790518542695
+      }
+    ],
+    "6. Add `dataset_id` parameter to every function in `app/repositories/sku_repo.py`": [
+      {
+        "executionId": "7d0adaf5-9ed0-4c6a-8b92-a5dc9daf191b",
+        "chatSessionId": "sess_63370579-4462-4070-beb2-7d01b97c12e8",
+        "timestamp": 1790520046662
+      }
+    ]
+  }
+}
