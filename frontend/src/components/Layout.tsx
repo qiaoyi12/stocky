@@ -19,6 +19,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: "Warehouse", emoji: "🏭", to: "/warehouse" },
   { label: "What-If Lab", emoji: "🧪", to: "/chaos" },
   { label: "Reports", emoji: "📊", to: "/impact" },
+  { label: "Datasets", emoji: "🗂️", to: "/datasets" },
   { label: "About", emoji: "ℹ️", to: "/about" },
 ];
 

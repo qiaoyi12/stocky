@@ -194,6 +194,15 @@ export interface ChaosResponse {
   source_unchanged: boolean;
 }
 
+// --- Uploads -----------------------------------------------------------------
+
+export interface UploadSummary {
+  id: number;
+  filename: string;
+  uploaded_at: string;
+  sku_count: number;
+}
+
 // --- Base fetch helper ------------------------------------------------------
 
 /** Base URL for API calls. Empty string keeps requests relative so the Vite
@@ -347,4 +356,14 @@ export function getImpact(): Promise<ImpactResponse> {
 /** POST /api/chaos — inject synthetic events into a working copy and reclassify (Req 18.1-18.3). */
 export function runChaos(payload: ChaosRequest): Promise<ChaosResponse> {
   return request<ChaosResponse>("/api/chaos", { method: "POST", body: payload });
+}
+
+/** GET /api/uploads — the upload history, most recent first. */
+export function listUploads(): Promise<UploadSummary[]> {
+  return request<UploadSummary[]>("/api/uploads");
+}
+
+/** DELETE /api/uploads — delete all uploaded inventory data (full reset). */
+export function deleteAllUploads(): Promise<void> {
+  return request<void>("/api/uploads", { method: "DELETE" });
 }

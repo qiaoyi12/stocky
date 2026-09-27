@@ -10,6 +10,7 @@ import ChaosPage from "./pages/ChaosPage";
 import WarehousePage from "./pages/WarehousePage";
 import ScenariosPage from "./pages/ScenariosPage";
 import AboutPage from "./pages/AboutPage";
+import DatasetsPage from "./pages/DatasetsPage";
 
 export default function App() {
   return (
@@ -25,6 +26,7 @@ export default function App() {
         <Route path="/warehouse" element={<WarehousePage />} />
         <Route path="/simulations" element={<ScenariosPage />} />
         <Route path="/about" element={<AboutPage />} />
+        <Route path="/datasets" element={<DatasetsPage />} />
       </Route>
     </Routes>
   );

@@ -46,7 +46,17 @@ function humanise(label: string): string {
 
 export default function ConditionBadges({ classifications }: ConditionBadgesProps) {
   if (!classifications || classifications.length === 0) {
-    return <span className="text-slate-400">—</span>;
+    // No classification labels means the SKU is genuinely healthy: not at
+    // stockout risk, doesn't need reorder, not fast/slow moving, not
+    // overstock, and no trend anomaly. Show a single green "Healthy" badge
+    // styled like the other condition badges for visual consistency.
+    return (
+      <div className="flex flex-wrap gap-1">
+        <span className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset bg-emerald-100 text-emerald-800 ring-emerald-600/20">
+          Healthy
+        </span>
+      </div>
+    );
   }
 
   return (
